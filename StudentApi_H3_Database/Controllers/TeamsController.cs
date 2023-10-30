@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudentApi_H3_Database.DTO;
 using StudentApi_H3_Database.Models;
 
 namespace StudentApi_H3_Database.Controllers
@@ -22,31 +24,46 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/Teams
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamDTO>>> GetTeams()
         {
           if (_context.Teams == null)
           {
               return NotFound();
           }
-            return await _context.Teams.ToListAsync();
+            
+            List<Team> TeamList = new List<Team>();
+
+            TeamList = await _context.Teams.
+                Include(s => s.Student).
+                ToListAsync();
+
+            List<TeamDTO> TeamDTOList = new List<TeamDTO>();
+
+            TeamDTOList = TeamList.Adapt<TeamDTO[]>().ToList();
+            
+            return Ok(TeamDTOList);
         }
 
         // GET: api/Teams/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Team>> GetTeam(int id)
+        public async Task<ActionResult<TeamDTO>> GetTeam(int id)
         {
           if (_context.Teams == null)
           {
               return NotFound();
           }
-            var team = await _context.Teams.FindAsync(id);
+            var team = await _context.Teams.
+                Include(s => s.Student).
+                FirstOrDefaultAsync(t => t.TeamId == id);
 
             if (team == null)
             {
                 return NotFound();
             }
 
-            return team;
+            TeamDTO TeamDTOObjekt = team.Adapt<TeamDTO>();  
+
+            return Ok(TeamDTOObjekt);
         }
 
         // PUT: api/Teams/5
