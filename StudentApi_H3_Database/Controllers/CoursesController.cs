@@ -73,12 +73,14 @@ namespace StudentApi_H3_Database.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutCourse(int id, UpdateCourseDTO courseDTO)
         {
-            if (id != course.CourseId)
+            if (id != courseDTO.CourseId)
             {
                 return BadRequest();
             }
+
+            var course = courseDTO.Adapt<Course>();
 
             _context.Entry(course).State = EntityState.Modified;
 
@@ -104,12 +106,15 @@ namespace StudentApi_H3_Database.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<SaveCourseDTO>> PostCourse(SaveCourseDTO courseDTO)
         {
           if (_context.Courses == null)
           {
               return Problem("Entity set 'DatabaseContext.Courses'  is null.");
           }
+
+            Course course = courseDTO.Adapt<Course>();  
+
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
