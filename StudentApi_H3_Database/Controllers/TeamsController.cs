@@ -69,12 +69,14 @@ namespace StudentApi_H3_Database.Controllers
         // PUT: api/Teams/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTeam(int id, Team team)
+        public async Task<IActionResult> PutTeam(int id, UpdateTeamDTO teamDTO)
         {
-            if (id != team.TeamId)
+            if (id != teamDTO.TeamId)
             {
                 return BadRequest();
             }
+
+            var team = teamDTO.Adapt<Team>();
 
             _context.Entry(team).State = EntityState.Modified;
 
