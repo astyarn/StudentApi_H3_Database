@@ -12,7 +12,6 @@
 
     public class CourseDTO : UpdateCourseDTO
     {
-        //Referer til StudentCourses
         public ICollection<StudentCourseDTOMinusCourse> StudentCourse { get; set; }
     }
 
