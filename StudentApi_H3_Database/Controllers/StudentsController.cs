@@ -73,12 +73,14 @@ namespace StudentApi_H3_Database.Controllers
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(int id, Student student)
+        public async Task<IActionResult> PutStudent(int id, UpdateStudentDTO studentDTO)
         {
-            if (id != student.StudentId)
+            if (id != studentDTO.StudentId)
             {
                 return BadRequest();
             }
+
+            var student = studentDTO.Adapt<Student>();   
 
             _context.Entry(student).State = EntityState.Modified;
 
