@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudentApi_H3_Database.DTO;
 using StudentApi_H3_Database.Models;
 
 namespace StudentApi_H3_Database.Controllers
@@ -22,13 +24,26 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/Students
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        public async Task<ActionResult<IEnumerable<StudentDTO>>> GetStudents()
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
-            return await _context.Students.ToListAsync();
+            if (_context.Students == null)
+            {
+                return NotFound();
+            }
+
+            List<Student> StudentList = new List<Student>();
+            
+            StudentList = await _context.Students.
+                Include(t => t.Team).
+                Include(s => s.StudentCourse).
+                ThenInclude(c => c.Course).
+                ToListAsync();
+
+            List<StudentDTO> StudentDTOList = new List<StudentDTO>();
+
+            StudentDTOList = StudentList.Adapt<StudentDTO[]>().ToList();
+
+            return Ok(StudentDTOList);
         }
 
         // GET: api/Students/5
