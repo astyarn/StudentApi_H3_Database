@@ -106,12 +106,15 @@ namespace StudentApi_H3_Database.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<SaveStudentDTO>> PostStudent(SaveStudentDTO studentDTO)
         {
           if (_context.Students == null)
           {
               return Problem("Entity set 'DatabaseContext.Students'  is null.");
           }
+            
+            Student student = studentDTO.Adapt<Student>();
+            
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
