@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using StudentApi_H3_Database.Models;
+
 namespace StudentApi_H3_Database
 {
     public class Program
@@ -9,10 +12,36 @@ namespace StudentApi_H3_Database
 
             // Add services to the container.
 
+            var config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+            .AddEnvironmentVariables()
+            .Build();
+
+            var connectionString = config.GetConnectionString("WebApiContext");
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddDbContext<DatabaseContext>(opt =>
+                opt.UseSqlServer((connectionString)));
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            }
+            );
+
 
             var app = builder.Build();
 
