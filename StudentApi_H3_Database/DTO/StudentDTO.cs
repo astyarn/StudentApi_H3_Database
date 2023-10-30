@@ -16,7 +16,7 @@
     {
         public TeamDTOMinusRelation? Team { get; set; }
 
-        //Referer Alle courses
+        public ICollection<StudentCourseDTOMinusStudent> StudentCourse { get; set; } = new List<StudentCourseDTOMinusStudent>();
     }
 
     public class StudentDTOMinusRelation : UpdateStudentDTO
