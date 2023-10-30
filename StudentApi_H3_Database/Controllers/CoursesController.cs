@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudentApi_H3_Database.DTO;
 using StudentApi_H3_Database.Models;
 
 namespace StudentApi_H3_Database.Controllers
@@ -22,31 +24,50 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<CourseDTO>>> GetCourses()
         {
           if (_context.Courses == null)
           {
               return NotFound();
           }
-            return await _context.Courses.ToListAsync();
+            
+            List<Course> CourseList = new List<Course>(); 
+            CourseList = await _context.Courses.
+                Include(s => s.StudentCourse).
+                ThenInclude(s => s.Student).
+                ThenInclude(t => t.Team).
+                ToListAsync();  
+            
+            List<CourseDTO> CourseDTOList = new List<CourseDTO>();
+
+            CourseDTOList = CourseList.Adapt<CourseDTO[]>().ToList();
+
+            return Ok(CourseDTOList);
         }
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<ActionResult<CourseDTO>> GetCourse(int id)
         {
           if (_context.Courses == null)
           {
               return NotFound();
           }
-            var course = await _context.Courses.FindAsync(id);
+            
+            var course = await _context.Courses.
+                Include(s => s.StudentCourse).
+                ThenInclude(s => s.Student).
+                ThenInclude(t => t.Team).
+                FirstOrDefaultAsync(c => c.CourseId == id);
 
             if (course == null)
             {
                 return NotFound();
             }
 
-            return course;
+            CourseDTO CourseDTOObjekt = course.Adapt<CourseDTO>();    
+
+            return Ok(CourseDTOObjekt);
         }
 
         // PUT: api/Courses/5
