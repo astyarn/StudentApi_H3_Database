@@ -48,20 +48,26 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/Students/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(int id)
+        public async Task<ActionResult<StudentDTO>> GetStudent(int id)
         {
           if (_context.Students == null)
           {
               return NotFound();
           }
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.
+                Include(t => t.Team).
+                Include(s => s.StudentCourse).
+                ThenInclude(c => c.Course).
+                FirstOrDefaultAsync(s => s.StudentId == id);
 
             if (student == null)
             {
                 return NotFound();
             }
 
-            return student;
+            StudentDTO StudentDTOObject = student.Adapt<StudentDTO>();  
+
+            return Ok(StudentDTOObject);
         }
 
         // PUT: api/Students/5
