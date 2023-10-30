@@ -102,12 +102,14 @@ namespace StudentApi_H3_Database.Controllers
         // POST: api/Teams
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTeam(Team team)
+        public async Task<ActionResult<SaveTeamDTO>> PostTeam(SaveTeamDTO teamDTO)
         {
           if (_context.Teams == null)
           {
               return Problem("Entity set 'DatabaseContext.Teams'  is null.");
           }
+
+            Team team = teamDTO.Adapt<Team>();
             _context.Teams.Add(team);
             await _context.SaveChangesAsync();
 
