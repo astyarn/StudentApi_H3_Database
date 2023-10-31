@@ -53,12 +53,13 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/StudentCourses/5
         [HttpGet("/api/StudenCourse/Grade{id}")]
-        public async Task<ActionResult<StudentCourseDTOMinusCourse>> GetStudentCourseGrade(int id)
+        public async Task<ActionResult<StudentCourseDTO>> GetStudentCourseGrade(int id)
         {
             if (id == -3 || id == 0 || id == 2 || id == 4 || id == 7 || id == 10 || id == 12)
             {
                 List<StudentCourse> StudentList = await _context.StudentCourses.
                     Where(sc => sc.Character == id).
+                    Include(c => c.Course).   
                     Include(s => s.Student).
                     ThenInclude(t => t.Team).
                     ToListAsync();
@@ -68,7 +69,7 @@ namespace StudentApi_H3_Database.Controllers
                     return NotFound("No student found with the specific grade.");
                 }
 
-                List<StudentCourseDTOMinusCourse> StudentDTOList = StudentList.Adapt<StudentCourseDTOMinusCourse[]>().ToList();
+                List<StudentCourseDTO> StudentDTOList = StudentList.Adapt<StudentCourseDTO[]>().ToList();
 
                 return Ok(StudentDTOList);
             }
