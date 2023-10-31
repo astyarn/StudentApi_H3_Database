@@ -52,7 +52,7 @@ namespace StudentApi_H3_Database.Controllers
         }
 
         // GET: api/StudentCourses/5
-        [HttpGet("/api/StudenCourse/Grade{id}")]
+        [HttpGet("/api/StudenCourse/Grade{character}")]
         public async Task<ActionResult<StudentCourseDTO>> GetStudentCourseGrade(int character)
         {
             if (character == -3 || character == 0 || character == 2 || character == 4 || character == 7 || character == 10 || character == 12)
