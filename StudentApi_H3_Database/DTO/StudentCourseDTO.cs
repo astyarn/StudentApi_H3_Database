@@ -23,4 +23,5 @@
     {
         public CourseDTOMinusRelation Course { get; set; }  
     }
+
 }

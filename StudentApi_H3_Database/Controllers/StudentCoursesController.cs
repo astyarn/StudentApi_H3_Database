@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudentApi_H3_Database.DTO;
 using StudentApi_H3_Database.Models;
 
 namespace StudentApi_H3_Database.Controllers
@@ -47,6 +49,33 @@ namespace StudentApi_H3_Database.Controllers
             }
 
             return studentCourse;
+        }
+
+        // GET: api/StudentCourses/5
+        [HttpGet("/api/StudenCourse/Grade{id}")]
+        public async Task<ActionResult<StudentCourseDTOMinusCourse>> GetStudentCourseGrade(int id)
+        {
+            if (id == -3 || id == 0 || id == 2 || id == 4 || id == 7 || id == 10 || id == 12)
+            {
+                List<StudentCourse> StudentList = await _context.StudentCourses.
+                    Where(sc => sc.Character == id).
+                    Include(s => s.Student).
+                    ThenInclude(t => t.Team).
+                    ToListAsync();
+
+                if (StudentList.Count == 0)
+                {
+                    return NotFound("No student found with the specific grade.");
+                }
+
+                List<StudentCourseDTOMinusCourse> StudentDTOList = StudentList.Adapt<StudentCourseDTOMinusCourse[]>().ToList();
+
+                return Ok(StudentDTOList);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         // PUT: api/StudentCourses/5
