@@ -21,6 +21,11 @@
 
     public class StudentDTOMinusRelation : UpdateStudentDTO
     {
+
+    }
+
+    public class StudentDTOToTeam : UpdateStudentDTO
+    {
         public TeamDTOMinusRelation? Team { get; set; }
 
     }

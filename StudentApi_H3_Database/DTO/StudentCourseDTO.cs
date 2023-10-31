@@ -4,6 +4,8 @@
     {
         public int CourseId { get; set; }
         public int StudentId { get; set; }
+        public int Character { get; set; }
+
     }
 
     public class StudentCourseDTO : SaveAndUpdateStudentCourseDTO
@@ -14,7 +16,7 @@
 
     public class StudentCourseDTOMinusCourse : SaveAndUpdateStudentCourseDTO
     {
-        public StudentDTOMinusRelation Student { get; set; }
+        public StudentDTOToTeam Student { get; set; }
     }
 
     public class StudentCourseDTOMinusStudent : SaveAndUpdateStudentCourseDTO
