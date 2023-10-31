@@ -53,12 +53,12 @@ namespace StudentApi_H3_Database.Controllers
 
         // GET: api/StudentCourses/5
         [HttpGet("/api/StudenCourse/Grade{id}")]
-        public async Task<ActionResult<StudentCourseDTO>> GetStudentCourseGrade(int id)
+        public async Task<ActionResult<StudentCourseDTO>> GetStudentCourseGrade(int character)
         {
-            if (id == -3 || id == 0 || id == 2 || id == 4 || id == 7 || id == 10 || id == 12)
+            if (character == -3 || character == 0 || character == 2 || character == 4 || character == 7 || character == 10 || character == 12)
             {
                 List<StudentCourse> StudentList = await _context.StudentCourses.
-                    Where(sc => sc.Character == id).
+                    Where(sc => sc.Character == character).
                     Include(c => c.Course).   
                     Include(s => s.Student).
                     ThenInclude(t => t.Team).
